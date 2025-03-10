@@ -1,6 +1,4 @@
-﻿using System.Security;
-using EjerciciosVictorAPI.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using EjerciciosVictorAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EjerciciosVictorAPI.Controllers
