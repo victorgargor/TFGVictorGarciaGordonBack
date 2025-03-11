@@ -1,30 +1,45 @@
-﻿using EjerciciosVictorAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using EjerciciosVictorAPI.Models; 
+using Microsoft.AspNetCore.Mvc; 
 
 namespace EjerciciosVictorAPI.Controllers
 {
-    [ApiController]
-    [Route("api/texto")]
+    /// <summary>
+    /// Controlador para manejar operaciones con texto.
+    /// </summary>
+    [ApiController] 
+    [Route("api/texto")] 
     public class TextoController : ControllerBase
     {
+        /// <summary>
+        ///  Propiedad que instancia el objeto Texto para realizar las operaciones
+        /// </summary>
         public Texto Texto { get; set; }
 
+        /// <summary>
+        /// Constructor que inicializa la instancia de la clase Texto.
+        /// </summary>
         public TextoController()
         {
-            Texto = new Texto();
+            Texto = new Texto(); 
         }
 
-        [HttpPost("contar")]
+        /// <summary>
+        /// Cuenta el número de carácteres en el texto.
+        /// </summary>
+        /// <param name="texto">Texto para contar los carácteres.</param>
+        /// <returns>Resultado con el número de caracteres.</returns>
+        [HttpPost("contar")] // Ruta para contar caracteres
         public ActionResult Contar([FromBody] string texto)
         {
+            // Si no se proporciona texto, se utiliza el texto predeterminado
             texto = string.IsNullOrEmpty(texto) ? this.ObtenerTextoPredeterminado() : texto;
 
             try
             {
-                // Contar los caracteres del texto
+                // Se cuentan los carácteres del texto
                 int contador = Texto.ContarCaracteres(texto);
 
-                // Responder con un objeto estructurado
+                // Devolución del resultado
                 return Ok(new
                 {
                     caracteres = contador
@@ -32,7 +47,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones en caso de que ocurra un error
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al contar los caracteres",
@@ -41,17 +56,23 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
-        [HttpPost("mayusculas")]
+        /// <summary>
+        /// Convierte el texto a mayúsculas.
+        /// </summary>
+        /// <param name="texto">Texto para convertir a mayúsculas.</param>
+        /// <returns>Texto convertido a mayúsculas.</returns>
+        [HttpPost("mayusculas")] 
         public ActionResult PasarMayusculas([FromBody] string texto)
         {
+            // Si no se proporciona texto, se utiliza el texto predeterminado
             texto = string.IsNullOrEmpty(texto) ? this.ObtenerTextoPredeterminado() : texto;
 
             try
             {
-                // Convertir el texto a mayúsculas
+                // Se convierte el texto a mayúsculas
                 var resultado = Texto.ConvertirAMayusculas(texto);
 
-                // Responder con el texto transformado
+                // Devolución del resultado
                 return Ok(new
                 {
                     textoConvertido = resultado
@@ -59,7 +80,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones en caso de que ocurra un error
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al convertir el texto a mayúsculas",
@@ -68,17 +89,23 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
-        [HttpPost("minusculas")]
+        /// <summary>
+        /// Convierte el texto a minúsculas.
+        /// </summary>
+        /// <param name="texto">Texto para convertir a minúsculas.</param>
+        /// <returns>Texto convertido a minúsculas.</returns>
+        [HttpPost("minusculas")] // Ruta para convertir el texto a minúsculas
         public ActionResult PasarMinusculas([FromBody] string texto)
         {
+            // Si no se proporciona texto, se utiliza el texto predeterminado
             texto = string.IsNullOrEmpty(texto) ? this.ObtenerTextoPredeterminado() : texto;
 
             try
             {
-                // Convertir el texto a minúsculas
+                // Se convierte el texto a minúsculas
                 var resultado = Texto.ConvertirAMinusculas(texto);
 
-                // Responder con el texto transformado
+                // Devolución del resultado
                 return Ok(new
                 {
                     textoConvertido = resultado
@@ -86,7 +113,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones en caso de que ocurra un error
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al convertir el texto a minúsculas",
@@ -95,17 +122,23 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Muestra las palabras que se repiten en el texto.
+        /// </summary>
+        /// <param name="texto">Texto para analizar las palabras repetidas.</param>
+        /// <returns>Palabras repetidas encontradas en el texto.</returns>
         [HttpPost("repetidas")]
         public ActionResult MostrarRepetidas([FromBody] string texto)
         {
+            // Si no se proporciona texto, se utiliza el texto predeterminado
             texto = string.IsNullOrEmpty(texto) ? this.ObtenerTextoPredeterminado() : texto;
 
             try
             {
-                // Contar las palabras repetidas en el texto
+                // Se cuentan las palabras repetidas 
                 var resultado = Texto.ContarRepetidas(texto);
 
-                // Responder con el resultado
+                // Devolución del resultado
                 return Ok(new
                 {
                     palabrasRepetidas = resultado
@@ -113,7 +146,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones en caso de que ocurra un error
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al contar las palabras repetidas",
@@ -122,17 +155,23 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
-        [HttpPost("reemplazar")]
+        /// <summary>
+        /// Reemplaza las palabras en el texto.
+        /// </summary>
+        /// <param name="texto">Texto para reemplazar palabras.</param>
+        /// <returns>Texto con las palabras reemplazadas.</returns>
+        [HttpPost("reemplazar")] 
         public ActionResult Reemplazar([FromBody] string texto)
         {
+            // Si no se proporciona texto, se utiliza el texto predeterminado
             texto = string.IsNullOrEmpty(texto) ? this.ObtenerTextoPredeterminado() : texto;
 
             try
             {
-                // Reemplazar las palabras en el texto
+                // Se reemplazan las palabras en el texto
                 var resultado = Texto.ReemplazarPalabra(texto);
 
-                // Responder con el texto reemplazado
+                // Devolución del resultado
                 return Ok(new
                 {
                     textoReemplazado = resultado
@@ -140,7 +179,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones en caso de que ocurra un error
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al reemplazar las palabras",
@@ -149,38 +188,43 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
-        [HttpPost("concatenar")]
+        /// <summary>
+        /// Concatenar el texto varias veces y medir el tiempo en ms.
+        /// </summary>
+        /// <param name="request">Objeto que contiene el texto y el número de veces a concatenar.</param>
+        /// <returns>Tiempo de concatenación (ms) y longitud del texto resultante.</returns>
+        [HttpPost("concatenar")] // Ruta para concatenar el texto
         public ActionResult MostrarTiempoConcatenar([FromBody] ConcatenacionRequest request)
         {
-            // Verificar si el número de veces es mayor que 1000
-            if (request.Veces > 100000)
+            // Validamos que el número de veces sea mayor a 0 y menor o igual a 100000
+            if (request.Veces > 100000 || request.Veces <= 0)
             {
                 return BadRequest(new
                 {
-                    mensaje = "El número de veces para concatenar no puede ser mayor a 100000."
+                    mensaje = "El número de veces para concatenar no puede ser mayor a 100000 ni menor o igual a 0."
                 });
             }
 
-            // Si el texto está vacío o nulo, asignamos el texto predeterminado
+            // Si el texto está vacío, se utiliza el texto predeterminado
             string texto = string.IsNullOrEmpty(request.Texto) ? this.ObtenerTextoPredeterminado() : request.Texto;
             int veces = request.Veces;
 
             try
             {
-                // Concatenar el texto varias veces y medir el tiempo
+                // Se concatena el texto y se mide el tiempo
                 (int longitud, long tiempo) = Texto.ConcatenarTexto(texto, veces);
 
-                // Responder con el tiempo y la longitud, agregando la unidad de tiempo
+                // Devolución del resultado
                 return Ok(new
                 {
                     mensaje = "Concatenación completada con éxito",
-                    tiempoConcatenacion = $"{tiempo} ms", // Aquí se agrega la unidad de milisegundos
+                    tiempoConcatenacion = $"{tiempo} ms", 
                     longitudTexto = longitud
                 });
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones en caso de que ocurra un error
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al concatenar el texto",
@@ -189,9 +233,14 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve el texto predeterminado en caso de que no se reciba texto por parte del usuario.
+        /// </summary>
+        /// <returns>Texto predeterminado.</returns>
         private string ObtenerTextoPredeterminado()
         {
             return "Proconsi es una empresa de Tecnologías de la Información y la Comunicación especializada en el desarrollo e integración de soluciones informáticas para todo tipo de empresas. Más de tres décadas de experiencia avalan a una compañía tan flexible como responsable. Cuenta con un equipo multidisciplinar de más de 120 profesionales cualificados, expertos y comprometidos con un único objetivo: hallar la solución tecnológica exacta para cada cliente. Proconsi es especialista en la creación y el desarrollo de software de gestión, consultoría tecnológica, dirección y gestión de proyectos I+D+i basados en TIC, soporte técnico, aplicaciones móviles y fomento de tendencias en nuevas tecnologías, como el cloud computing.";
         }
     }
 }
+

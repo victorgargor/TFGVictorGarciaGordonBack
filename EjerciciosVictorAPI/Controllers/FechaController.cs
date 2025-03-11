@@ -3,17 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EjerciciosVictorAPI.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las peticiones relacionadas con operaciones con fechas.
+    /// </summary>
     [ApiController]
     [Route("api/fecha")]
     public class FechaController : ControllerBase
     {
+        /// <summary>
+        /// Instancia de la clase Fecha que contiene los métodos para trabajar con fechas.
+        /// </summary>
         public Fecha Fecha { get; set; }
 
+        /// <summary>
+        /// Constructor que inicializa la instancia de la clase Fecha.
+        /// </summary>
         public FechaController()
         {
             Fecha = new Fecha();
         }
 
+        /// <summary>
+        /// Método que calcula la diferencia en días entre dos fechas.
+        /// </summary>
+        /// <param name="fechaRequest">Objeto que contiene las dos fechas a comparar.</param>
+        /// <returns>La diferencia en días entre las dos fechas proporcionadas.</returns>
         [HttpPost("diferencia")]
         public ActionResult CalcularDiferencia([FromBody] FechasRequest fechaRequest)
         {
@@ -30,7 +44,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al calcular la diferencia",
@@ -39,6 +53,11 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que obtiene el primer y último día del año para dos fechas proporcionadas.
+        /// </summary>
+        /// <param name="fechaRequest">Objeto que contiene las dos fechas para las cuales se obtendrán el inicio y fin del año.</param>
+        /// <returns>Las fechas del inicio y fin del año de las dos fechas proporcionadas.</returns>
         [HttpPost("inicio-fin")]
         public ActionResult MostrarInicioYFinAnyo([FromBody] FechasRequest fechaRequest)
         {
@@ -55,7 +74,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al obtener alguno de los datos",
@@ -64,6 +83,11 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que calcula el número de días del año para las dos fechas proporcionadas.
+        /// </summary>
+        /// <param name="fechaRequest">Objeto que contiene las dos fechas para calcular los días del año.</param>
+        /// <returns>El número de días en el año de cada una de las fechas proporcionadas.</returns>
         [HttpPost("dias")]
         public ActionResult MostrarDiasAnyo([FromBody] FechasRequest fechaRequest)
         {
@@ -80,7 +104,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al calcular el número de días del año",
@@ -89,6 +113,11 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que calcula el número de la semana del año para las dos fechas proporcionadas.
+        /// </summary>
+        /// <param name="fechaRequest">Objeto que contiene las dos fechas para calcular el número de la semana.</param>
+        /// <returns>El número de semana en que se encuentra cada una de las fechas proporcionadas.</returns>
         [HttpPost("semana")]
         public ActionResult MostrarNumeroSemana([FromBody] FechasRequest fechaRequest)
         {
@@ -105,7 +134,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
+                // En caso de error
                 return StatusCode(500, new
                 {
                     mensaje = "Ocurrió un error al calcular la semana",
