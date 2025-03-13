@@ -25,7 +25,7 @@ namespace EjerciciosVictorAPI.Controllers
         /// </summary>
         public ItemSeparatorController()
         {
-            string valorPorDefecto = "Bread$$##12.5$$##10";  // Valor por defecto 
+            string valorPorDefecto = "Bread$$##12.5$$##10";  
             ItemSeparator = new ItemSeparator(valorPorDefecto);
         }
 

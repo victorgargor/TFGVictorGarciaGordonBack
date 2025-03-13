@@ -30,7 +30,7 @@ namespace EjerciciosVictorAPI.Controllers
         /// <param name="num1">Primer número (en formato string).</param>
         /// <param name="num2">Segundo número (en formato string).</param>
         /// <returns>Un ActionResult con un error en caso de que la validación falle, o null si valida.</returns>
-        private ActionResult ValidarNumeros(string num1, string num2)
+        private ActionResult? ValidarNumeros(string num1, string num2)
         {
             // Comprueba si los números contienen comas.
             if (num1.Contains(',') || num2.Contains(','))

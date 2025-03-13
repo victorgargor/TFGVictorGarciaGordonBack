@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
+    <Compile Remove="Models\FormasGeneradas.cs" />
+    <Compile Remove="Models\GeneradorFormas.cs" />
   </ItemGroup>
 
   <ItemGroup>

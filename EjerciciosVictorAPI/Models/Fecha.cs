@@ -49,7 +49,8 @@
             // Obtiene el primer y último día del año y calcula la diferencia en días
             DateTime primerDia = SacarPrimerDiaAnyo(fecha);
             DateTime ultimoDia = SacarUltimoDiaAnyo(fecha);
-            return (ultimoDia - primerDia).Days + 1; // Se añade 1 porque ambos días están incluidos
+            // Se añade 1 porque ambos días están incluidos
+            return (ultimoDia - primerDia).Days + 1; 
         }
 
         /// <summary>

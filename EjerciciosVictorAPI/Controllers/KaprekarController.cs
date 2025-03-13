@@ -18,17 +18,17 @@ namespace EjerciciosVictorAPI.Controllers
         [HttpGet("{numero}")]
         public ActionResult<Kaprekar> GetKaprekar(string numero)
         {
-            // Verifica si el parámetro ingresado es un número entero válido.
+            // Verifico si el parámetro ingresado es un número entero válido.
             if (!int.TryParse(numero, out int numeroEntero))
             {
                 // Si hay error.
                 return BadRequest(new { Mensaje = "El parámetro proporcionado no es un número entero válido." });
             }
 
-            // Crea una instancia de la clase Kaprekar con el número proporcionado.
+            // Creo una instancia de la clase Kaprekar con el número proporcionado.
             var kaprekar = new Kaprekar(numeroEntero);
 
-            // Devuelve la respuesta HTTP 200 OK con el objeto Kaprekar.
+            // Devuelvo la respuesta.
             return Ok(kaprekar);
         }
     }

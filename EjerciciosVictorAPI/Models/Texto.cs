@@ -45,16 +45,19 @@ namespace EjerciciosVictorAPI.Models
         /// <returns>Diccionario con las palabras repetidas y su frecuencia.</returns>
         public Dictionary<string, int> ContarRepetidas(string texto)
         {
-            // Divide el texto en palabras, separadas por espacios
-            var palabras = texto.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            // Divido el texto en palabras, separadas por espacios
+            var palabras = texto.Split([' '], StringSplitOptions.RemoveEmptyEntries);
 
-            // Crea un diccionario con las palabras repetidas y su frecuencia
+            // Creo un diccionario con las palabras repetidas y su frecuencia
             var contadorPalabras = palabras
+                // Agrupo las palabras iguales
                 .GroupBy(palabra => palabra)
+                // Selecciono los que tienen repetidas solo
                 .Where(grupo => grupo.Count() > 1)
-                .ToDictionary(grupo => grupo.Key, grupo => grupo.Count());
+                // Creo un diccionario con las palabras y su frecuencia
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Count()); 
 
-            return contadorPalabras;
+            return contadorPalabras; 
         }
 
         /// <summary>
@@ -64,12 +67,14 @@ namespace EjerciciosVictorAPI.Models
         /// <returns>Texto con la palabra reemplazada.</returns>
         public string ReemplazarPalabra(string texto)
         {
-            if (texto.Contains("Proconsi"))
+            // Verifico si el texto contiene la palabra "Proconsi"
+            if (texto.Contains("Proconsi")) 
             {
-                texto = texto.Replace("Proconsi", "Isnocorp");
+                // Reemplazo "Proconsi" con "Isnocorp"
+                texto = texto.Replace("Proconsi", "Isnocorp"); 
             }
 
-            return texto;
+            return texto; 
         }
 
         /// <summary>
@@ -80,17 +85,23 @@ namespace EjerciciosVictorAPI.Models
         /// <returns>Una tupla con la longitud del texto concatenado y el tiempo que tardó en ms.</returns>
         public static (int, long) ConcatenarTexto(string texto, int veces)
         {
+            // Creo un StringBuilder con una capacidad inicial para el texto concatenado
             var textoConcatenado = new StringBuilder(texto.Length * veces);
+
+            // Inicio el cronómetro para medir el tiempo
             var cronometro = Stopwatch.StartNew();
 
+            // Concateno el texto el número de veces especificado
             for (var i = 0; i < veces; i++)
             {
                 textoConcatenado.Append(texto);
             }
 
+            // Se detiene el cronómetro y guarda el tiempo en ms
             cronometro.Stop();
             long tiempoTardado = cronometro.ElapsedMilliseconds;
 
+            // Devuelvo una tupla con la longitud del texto concatenado y el tiempo que tardó en hacerlo
             return (textoConcatenado.Length, tiempoTardado);
         }
     }
