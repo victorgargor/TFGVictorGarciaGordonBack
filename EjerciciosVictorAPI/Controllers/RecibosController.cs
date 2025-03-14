@@ -1,6 +1,10 @@
-﻿namespace EjerciciosVictorAPI.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace EjerciciosVictorAPI.Controllers
 {
-    public class RecibosController
+    [ApiController]
+    [Route("api/recibos")]
+    public class RecibosController : ControllerBase
     {
     }
 }
