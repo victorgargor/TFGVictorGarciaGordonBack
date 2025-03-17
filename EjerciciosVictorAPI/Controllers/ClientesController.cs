@@ -29,7 +29,7 @@ namespace EjerciciosVictorAPI.Controllers
         /// </summary>
         /// <param name="orden">Criterio de ordenación ("dni" o "fecha").</param>
         [HttpGet]
-        public async Task<IEnumerable<Cliente>> Get([FromQuery] string orden = "dni")
+        public async Task<IEnumerable<Cliente>> ListarClientes([FromQuery] string orden = "dni")
         {
             // Devuelve la lista de clientes ordenada según el criterio del usuario
             return orden.ToLower() == "fecha"

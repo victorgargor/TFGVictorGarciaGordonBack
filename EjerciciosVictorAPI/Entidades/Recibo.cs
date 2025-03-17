@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EjerciciosVictorAPI.Entidades
 {
@@ -25,6 +26,7 @@ namespace EjerciciosVictorAPI.Entidades
         /// Fecha de emisión del recibo.
         /// </summary>
         [Required(ErrorMessage = "Se requiere la fecha de emisión")]
+        [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime FechaEmision { get; set; }
 
         /// <summary>

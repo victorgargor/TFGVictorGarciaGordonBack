@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Entidades\TipoCliente.cs" />
     <Compile Remove="Migrations\20250314120905_CRUD_Clientes_Recibos.cs" />
@@ -17,6 +24,9 @@
     <Compile Remove="Migrations\20250314125241_CRUD_Clientes_Recibos.Designer.cs" />
     <Compile Remove="Migrations\20250314125529_CRUD_Clientes_Recibos.cs" />
     <Compile Remove="Migrations\20250314125529_CRUD_Clientes_Recibos.Designer.cs" />
+    <Compile Remove="Migrations\20250314125904_ClientesyRecibos.cs" />
+    <Compile Remove="Migrations\20250314125904_ClientesyRecibos.Designer.cs" />
+    <Compile Remove="Migrations\ApplicationDbContextModelSnapshot.cs" />
     <Compile Remove="Models\FormasGeneradas.cs" />
     <Compile Remove="Models\GeneradorFormas.cs" />
     <Compile Remove="Models\TipoCliente.cs" />
@@ -29,6 +39,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
