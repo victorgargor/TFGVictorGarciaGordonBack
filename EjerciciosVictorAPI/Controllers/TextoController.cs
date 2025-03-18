@@ -94,7 +94,7 @@ namespace EjerciciosVictorAPI.Controllers
         /// </summary>
         /// <param name="texto">Texto para convertir a minúsculas.</param>
         /// <returns>Texto convertido a minúsculas.</returns>
-        [HttpPost("minusculas")] // Ruta para convertir el texto a minúsculas
+        [HttpPost("minusculas")] 
         public ActionResult PasarMinusculas([FromBody] string texto)
         {
             // Si no se proporciona texto, se utiliza el texto predeterminado

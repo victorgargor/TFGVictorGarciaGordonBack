@@ -3,7 +3,7 @@
     /// <summary>
     /// Clase que proporciona métodos para realizar cálculos matemáticos.
     /// </summary>
-    public class Calculadora
+    public class Calculadora : ICalculadora
     {
         /// <summary>
         /// Calcula la suma de dos números y redondea el resultado a un número específico de decimales.

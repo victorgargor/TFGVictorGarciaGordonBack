@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NewFolder\**" />
-    <Content Remove="NewFolder\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
-    <None Remove="NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Entidades\TipoCliente.cs" />
     <Compile Remove="Migrations\20250314120905_CRUD_Clientes_Recibos.cs" />

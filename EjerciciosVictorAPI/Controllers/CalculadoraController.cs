@@ -66,7 +66,10 @@ namespace EjerciciosVictorAPI.Controllers
         {
             // Validar que los números sean correctos.
             var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null) return validacion;
+            if (validacion != null)
+            {
+                return validacion;
+            }   
 
             // Convertir las cadenas a números tipo double.
             double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
