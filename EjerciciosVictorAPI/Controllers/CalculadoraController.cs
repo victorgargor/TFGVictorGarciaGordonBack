@@ -5,242 +5,284 @@ using Microsoft.AspNetCore.Mvc;
 namespace EjerciciosVictorAPI.Controllers
 {
     /// <summary>
-    /// Controlador para manejar las operaciones de la clase Calculadora.
+    /// Controlador para manejar las operaciones de la Calculadora.
+    /// Usa distintos endpoints para sumar, restar, dividir, multiplicar, calcular el módulo y comparar números.
     /// </summary>
     [ApiController]
     [Route("api/calculadora")]
     public class CalculadoraController : ControllerBase
     {
         /// <summary>
-        /// Propiedad que instancia el objeto Calculadora para realizar las operaciones.
+        /// Propiedad que instancia la implementación de ICalculadora para realizar los cálculos.
         /// </summary>
-        public Calculadora Calculadora { get; set; }
+        public ICalculadora Calculadora { get; set; }
 
         /// <summary>
-        /// Constructor que inicializa la instancia de la clase Calculadora.
+        /// Constructor que inicializa la instancia de la Calculadora.
+        /// Se utiliza la implementación concreta de ICalculadora.
         /// </summary>
         public CalculadoraController()
         {
+            // Se crea una nueva instancia de la clase Calculadora, que implementa ICalculadora.
             Calculadora = new Calculadora();
         }
 
         /// <summary>
-        /// Método que valida los números de entrada para asegurarse de que son correctos.
+        /// Método privado que valida y convierte los parámetros numéricos.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <returns>Un ActionResult con un error en caso de que la validación falle, o null si valida.</returns>
-        private ActionResult? ValidarNumeros(string num1, string num2)
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <param name="numParseado1">Primer número convertido a double.</param>
+        /// <param name="numParseado2">Segundo número convertido a double.</param>
+        /// <returns>Retorna un ActionResult con un error si la validación falla o null si pasa.</returns>
+        private ActionResult? ValidarYParsearNumeros(string num1, string num2, out double numParseado1, out double numParseado2)
         {
-            // Comprueba si los números contienen comas.
+            numParseado1 = 0;
+            numParseado2 = 0;
+
+            // Verifico que se use el punto (.) como separador decimal.
             if (num1.Contains(',') || num2.Contains(','))
             {
-                return BadRequest(new
-                {
-                    Error = "El formato de los números no es válido, se debe usar punto (.) como separador decimal."
-                });
+                // Si contiene coma, devuelve un error indicando que el separador decimal no es válido.
+                return BadRequest(new { Error = Constantes.ERROR_SEPARADOR_DECIMAL });
             }
 
-            // Comprueba si los números son válidos y se pueden convertir a double.
-            if (!double.TryParse(num1, NumberStyles.Any, CultureInfo.InvariantCulture, out _) ||
-                !double.TryParse(num2, NumberStyles.Any, CultureInfo.InvariantCulture, out _))
+            // Convierto las cadenas a double.
+            if (!double.TryParse(num1, NumberStyles.Any, CultureInfo.InvariantCulture, out numParseado1) ||
+                !double.TryParse(num2, NumberStyles.Any, CultureInfo.InvariantCulture, out numParseado2))
             {
-                return BadRequest(new
-                {
-                    Error = "Los números no son válidos"
-                });
+                // Si falla devuelvo el error correspondiente.
+                return BadRequest(new { Error = Constantes.ERROR_NUMEROS_INVALIDOS });
             }
 
+            // Si no hubo errores devuelve null.
             return null;
         }
 
         /// <summary>
-        /// Método para realizar la suma de dos números.
+        /// Método privado para validar el número de decimales permitido.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <param name="numDec">Número de decimales que debe mostrar el resultado.</param>
-        /// <returns>Resultado de la suma en formato JSON.</returns>
+        /// <param name="numDec">Número de decimales solicitados.</param>
+        /// <returns>Retorna un ActionResult con un error si el número de decimales no es válido, o null si es válido.</returns>
+        private ActionResult? ValidarDecimales(int numDec)
+        {
+            // Verifico que el número de decimales esté dentro del rango permitido.
+            if (numDec < Constantes.MIN_DECIMALES || numDec > Constantes.MAX_DECIMALES)
+            {
+                // Si no está en el rango devuelvo un error.
+                return BadRequest(new { Error = $"El número de decimales debe estar entre {Constantes.MIN_DECIMALES} y {Constantes.MAX_DECIMALES}." });
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Endpoint para realizar la operación de suma.
+        /// </summary>
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <param name="numDec">Número de decimales a mostrar en el resultado.</param>
+        /// <returns>Retorna el resultado de la suma o un error en caso de fallo.</returns>
         [HttpGet("suma/{num1}/{num2}/{numDec}")]
         public ActionResult Sumar(string num1, string num2, int numDec)
         {
-            // Validar que los números sean correctos.
-            var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null)
+            // Valido y parseo los números proporcionados.
+            var error = ValidarYParsearNumeros(num1, num2, out double numParseado1, out double numParseado2);
+            if (error != null)
             {
-                return validacion;
-            }   
+                return error;
+            }
 
-            // Convertir las cadenas a números tipo double.
-            double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
-            double.TryParse(num2, CultureInfo.InvariantCulture, out double n2);
-
-            // Calcular la suma y devolver el resultado.
-            return Ok(new
+            // Valido el número de decimales.
+            error = ValidarDecimales(numDec);
+            if (error != null)
             {
-                Resultado = Calculadora.CalcularSuma(n1, n2, numDec)
-            });
+                return error;
+            }
+
+            // Realizo la suma y devuelvo el resultado.
+            double resultado = Calculadora.CalcularSuma(numParseado1, numParseado2, numDec);
+
+            // Formateo el resultado para que me salga con el número de decimales que se ha proporcionado y con (.) como separador decimal y (,) de miles.
+            string resultadoFormateado = resultado.ToString("N" + numDec, CultureInfo.InvariantCulture);
+
+            return Ok(new { Resultado = resultadoFormateado });
         }
 
         /// <summary>
-        /// Método para realizar la resta de dos números.
+        /// Endpoint para realizar la operación de resta.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <param name="numDec">Número de decimales que debe mostrar el resultado.</param>
-        /// <returns>Resultado de la resta en formato JSON.</returns>
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <param name="numDec">Número de decimales a mostrar en el resultado.</param>
+        /// <returns>Retorna el resultado de la resta o un error en caso de fallo.</returns>
         [HttpGet("resta/{num1}/{num2}/{numDec}")]
         public ActionResult Restar(string num1, string num2, int numDec)
         {
-            // Validar que los números sean correctos.
-            var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null) return validacion;
-
-            // Convertir las cadenas a números tipo double.
-            double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
-            double.TryParse(num2, CultureInfo.InvariantCulture, out double n2);
-
-            // Calcular la resta y devolver el resultado.
-            return Ok(new
+            // Valido y parseo los números proporcionados.
+            var error = ValidarYParsearNumeros(num1, num2, out double numParseado1, out double numParseado2);
+            if (error != null)
             {
-                Resultado = Calculadora.CalcularResta(n1, n2, numDec)
-            });
+                return error;
+            }
+
+            // Valido el número de decimales.
+            error = ValidarDecimales(numDec);
+            if (error != null)
+            {
+                return error;
+            }
+
+            // Realizo la resta y devuelvo el resultado.
+            double resultado = Calculadora.CalcularResta(numParseado1, numParseado2, numDec);
+
+            // Formateo el resultado para que me salga con el número de decimales que se ha proporcionado y con (.) como separador decimal y (,) de miles.
+            string resultadoFormateado = resultado.ToString("N" + numDec, CultureInfo.InvariantCulture);
+
+            return Ok(new { Resultado = resultadoFormateado });
         }
 
         /// <summary>
-        /// Método para realizar la división de dos números.
+        /// Endpoint para realizar la operación de división.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <param name="numDec">Número de decimales que debe mostrar el resultado.</param>
-        /// <returns>Resultado de la división o error si el divisor es cero.</returns>
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <param name="numDec">Número de decimales a mostrar en el resultado.</param>
+        /// <returns>Retorna el resultado de la división o un error si el divisor es cero.</returns>
         [HttpGet("division/{num1}/{num2}/{numDec}")]
         public ActionResult Dividir(string num1, string num2, int numDec)
         {
-            // Validar que los números sean correctos.
-            var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null) return validacion;
-
-            // Convertir las cadenas a números tipo double.
-            double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
-            double.TryParse(num2, CultureInfo.InvariantCulture, out double n2);
-
-            // Comprobar si el divisor es cero.
-            if (n2 == 0)
+            // Valido y parseo los números proporcionados.
+            var error = ValidarYParsearNumeros(num1, num2, out double numParseado1, out double numParseado2);
+            if (error != null)
             {
-                return BadRequest(new
-                {
-                    Error = "No se puede dividir por 0."
-                });
+                return error;
             }
 
-            // Calcular la división y devolver el resultado.
-            return Ok(new
+            // Valido el número de decimales.
+            error = ValidarDecimales(numDec);
+            if (error != null)
             {
-                Resultado = Calculadora.CalcularDivision(n1, n2, numDec)
-            });
+                return error;
+            }
+
+            // Compruebo que el segundo número no sea 0.
+            if (numParseado2 == 0)
+            {
+                // En el caso de que sea 0, devuelvo el error correspondiente.
+                return BadRequest(new { Error = Constantes.ERROR_DIVISION_CERO });
+            }
+
+            // Realizo la división y devuelvo el resultado.
+            double resultado = Calculadora.CalcularDivision(numParseado1, numParseado2, numDec);
+
+            // Formateo el resultado para que me salga con el número de decimales que se ha proporcionado y con (.) como separador decimal y (,) de miles.
+            string resultadoFormateado = resultado.ToString("N" + numDec, CultureInfo.InvariantCulture);
+
+            return Ok(new { Resultado = resultadoFormateado });
         }
 
         /// <summary>
-        /// Método para realizar la multiplicación de dos números.
+        /// Endpoint para realizar la operación de multiplicación.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <param name="numDec">Número de decimales que debe mostrar el resultado.</param>
-        /// <returns>Resultado de la multiplicación en formato JSON.</returns>
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <param name="numDec">Número de decimales a mostrar en el resultado.</param>
+        /// <returns>Retorna el resultado de la multiplicación o un error en caso de fallo.</returns>
         [HttpGet("multiplicacion/{num1}/{num2}/{numDec}")]
         public ActionResult Multiplicar(string num1, string num2, int numDec)
         {
-            // Validar que los números sean correctos.
-            var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null) return validacion;
-
-            // Convertir las cadenas a números tipo double.
-            double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
-            double.TryParse(num2, CultureInfo.InvariantCulture, out double n2);
-
-            // Calcular la multiplicación y devolver el resultado.
-            return Ok(new
+            // Valido y parseo los números proporcionados.
+            var error = ValidarYParsearNumeros(num1, num2, out double numParseado1, out double numParseado2);
+            if (error != null)
             {
-                Resultado = Calculadora.CalcularMultiplicacion(n1, n2, numDec)
-            });
+                return error;
+            }
+
+            // Valido el número de decimales.
+            error = ValidarDecimales(numDec);
+            if (error != null)
+            {
+                return error;
+            }
+
+            // Realizo la multiplicación y devuelvo el resultado.
+            double resultado = Calculadora.CalcularMultiplicacion(numParseado1, numParseado2, numDec);
+
+            // Formateo el resultado para que me salga con el número de decimales que se ha proporcionado y con (.) como separador decimal y (,) de miles.
+            string resultadoFormateado = resultado.ToString("N" + numDec, CultureInfo.InvariantCulture);
+
+            return Ok(new { Resultado = resultadoFormateado });
         }
 
         /// <summary>
-        /// Método para realizar la operación de módulo (residuo) entre dos números.
+        /// Endpoint para realizar la operación de módulo.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <param name="numDec">Número de decimales que debe mostrar el resultado.</param>
-        /// <returns>Resultado del módulo o error si el divisor es cero.</returns>
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <param name="numDec">Número de decimales a mostrar en el resultado.</param>
+        /// <returns>Retorna el resultado del módulo o un error si el divisor es cero.</returns>
         [HttpGet("modulo/{num1}/{num2}/{numDec}")]
         public ActionResult Modular(string num1, string num2, int numDec)
         {
-            // Validar que los números sean correctos.
-            var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null) return validacion;
-
-            // Convertir las cadenas a números tipo double.
-            double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
-            double.TryParse(num2, CultureInfo.InvariantCulture, out double n2);
-
-            // Comprobar si el divisor es cero.
-            if (n2 == 0)
+            // Valido y parseo los números proporcionados.
+            var error = ValidarYParsearNumeros(num1, num2, out double numParseado1, out double numParseado2);
+            if (error != null)
             {
-                return BadRequest(new
-                {
-                    Error = "No se puede dividir por 0."
-                });
+                return error;
             }
 
-            // Calcular el módulo y devolver el resultado.
-            return Ok(new
+            // Valido el número de decimales.
+            error = ValidarDecimales(numDec);
+            if (error != null)
             {
-                Resultado = Calculadora.CalcularModulo(n1, n2, numDec)
-            });
+                return error;
+            }
+
+            // Compruebo que el segundo número no sea 0.
+            if (numParseado2 == 0)
+            {
+                // En el caso de que sea 0, devuelvo el error correspondiente.
+                return BadRequest(new { Error = Constantes.ERROR_DIVISION_CERO });
+            }
+
+            // Calculo el módulo y devuelvo el resultado.
+            double resultado = Calculadora.CalcularModulo(numParseado1, numParseado2, numDec);
+
+            // Formateo el resultado para que me salga con el número de decimales que se ha proporcionado y con (.) como separador decimal y (,) de miles.
+            string resultadoFormateado = resultado.ToString("N" + numDec, CultureInfo.InvariantCulture);
+
+            return Ok(new { Resultado = resultadoFormateado });
         }
 
         /// <summary>
-        /// Método para comparar dos números.
+        /// Endpoint para comparar dos números.
         /// </summary>
-        /// <param name="num1">Primer número (en formato string).</param>
-        /// <param name="num2">Segundo número (en formato string).</param>
-        /// <returns>Resultado de la comparación entre los dos números.</returns>
+        /// <param name="num1">Primer número en formato string.</param>
+        /// <param name="num2">Segundo número en formato string.</param>
+        /// <returns>Retorna el resultado de la comparación como un mensaje textual.</returns>
         [HttpGet("comparacion/{num1}/{num2}")]
         public ActionResult Comparar(string num1, string num2)
         {
-            // Validar que los números sean correctos.
-            var validacion = ValidarNumeros(num1, num2);
-            if (validacion != null) return validacion;
-
-            // Convertir las cadenas a números tipo double.
-            double.TryParse(num1, CultureInfo.InvariantCulture, out double n1);
-            double.TryParse(num2, CultureInfo.InvariantCulture, out double n2);
-
-            // Comparar los dos números.
-            int comparacion = Calculadora.CompararNumeros(n1, n2);
-
-            // Devolver el resultado de la comparación.
-            if (comparacion == 1)
+            // Valido y parseo los números proporcionados.
+            var error = ValidarYParsearNumeros(num1, num2, out double numParseado1, out double numParseado2);
+            if (error != null)
             {
-                return Ok(new
-                {
-                    Resultado = "El primer número es mayor."
-                });
-            }
-            else if (comparacion == 0)
-            {
-                return Ok(new
-                {
-                    Resultado = "Los dos números son iguales."
-                });
+                return error;
             }
 
-            return Ok(new
+            // Comparo los dos números
+            int resultadoComparacion = Calculadora.CompararNumeros(numParseado1, numParseado2);
+
+            // Seleccionar el mensaje para el resultado dependiendo de la devolución del método de mi Calculadora.
+            string mensaje = resultadoComparacion switch
             {
-                Resultado = "El segundo número es mayor."
-            });
+                1 => "El primer número es mayor.",
+                0 => "Los dos números son iguales.",
+                -1 => "El segundo número es mayor.",
+                _ => "Error al realizar la comparación."
+            };
+
+            return Ok(new { Resultado = mensaje });
         }
     }
 }
-

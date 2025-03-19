@@ -1,7 +1,7 @@
 ﻿namespace EjerciciosVictorAPI.Models
 {
     /// <summary>
-    /// Clase que proporciona métodos para realizar cálculos matemáticos.
+    /// Clase que implementa operaciones matemáticas básicas.
     /// </summary>
     public class Calculadora : ICalculadora
     {
@@ -50,7 +50,15 @@
         /// <returns>El resultado de la multiplicación redondeada.</returns>
         public double CalcularMultiplicacion(double num1, double num2, int numDec)
         {
-            return Math.Round(num1 * num2, numDec);
+            var resultado = Math.Round(num1 * num2, numDec);
+
+            // Por si se multiplica un número negativo por 0 para que la salida no sea -0.
+            if(resultado == 0)
+            {
+                return Math.Abs(resultado);
+            }
+
+            return resultado;
         }
 
         /// <summary>
@@ -62,7 +70,10 @@
         /// <returns>El resultado del módulo redondeado.</returns>
         public double CalcularModulo(double num1, double num2, int numDec)
         {
-            return Math.Round(num1 % num2, numDec);
+            var resultado = Math.Round(num1 % num2, numDec);
+
+            // Devuelvo el valor absoluto ya que el módulo de un número negativo tiene que ser positivo o cero.
+            return Math.Abs(resultado);
         }
 
         /// <summary>
