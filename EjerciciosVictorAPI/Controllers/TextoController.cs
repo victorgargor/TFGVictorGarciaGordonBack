@@ -196,7 +196,7 @@ namespace EjerciciosVictorAPI.Controllers
         [HttpPost("concatenar")] // Ruta para concatenar el texto
         public ActionResult MostrarTiempoConcatenar([FromBody] ConcatenacionRequest request)
         {
-            // Validamos que el número de veces sea mayor a 0 y menor o igual a 100000
+            // Valido que el número de veces sea mayor a 0 y menor o igual a 100000
             if (request.Veces > 100000 || request.Veces <= 0)
             {
                 return BadRequest(new

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace EjerciciosVictorAPI.Models
 {
@@ -45,20 +46,22 @@ namespace EjerciciosVictorAPI.Models
         /// <returns>Diccionario con las palabras repetidas y su frecuencia.</returns>
         public Dictionary<string, int> ContarRepetidas(string texto)
         {
-            // Divido el texto en palabras, separadas por espacios
-            var palabras = texto.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+            // Esta expresión regular elimina los caracteres que no sean letras (\p{L}) ni números (\p{N}) al inicio o al final de la palabra.
+            // Así hola es lo mismo que *hola o hola^ etc.
+            // El ToLowerInvariant sirve para que salga que hola HOLA y Hola son la misma palabra (para que no sea Case Sensitive)
+            var palabras = texto.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(palabra => Regex.Replace(palabra, @"^(?:[^\p{L}\p{N}])+|(?:[^\p{L}\p{N}])+$", "").ToLowerInvariant());
 
-            // Creo un diccionario con las palabras repetidas y su frecuencia
+            // Agrugo las palabras y luego saco las que tienen Count() > 1 lo que quiere decir que se repiten y creo el diccionario con clave, valor
             var contadorPalabras = palabras
-                // Agrupo las palabras iguales
                 .GroupBy(palabra => palabra)
-                // Selecciono los que tienen repetidas solo
                 .Where(grupo => grupo.Count() > 1)
-                // Creo un diccionario con las palabras y su frecuencia
-                .ToDictionary(grupo => grupo.Key, grupo => grupo.Count()); 
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Count());
 
-            return contadorPalabras; 
+            return contadorPalabras;
         }
+
+
 
         /// <summary>
         /// Reemplaza la palabra "Proconsi" por "Isnocorp" en el texto.
@@ -68,13 +71,13 @@ namespace EjerciciosVictorAPI.Models
         public string ReemplazarPalabra(string texto)
         {
             // Verifico si el texto contiene la palabra "Proconsi"
-            if (texto.Contains("Proconsi")) 
+            if (texto.Contains("Proconsi"))
             {
                 // Reemplazo "Proconsi" con "Isnocorp"
-                texto = texto.Replace("Proconsi", "Isnocorp"); 
+                texto = texto.Replace("Proconsi", "Isnocorp");
             }
 
-            return texto; 
+            return texto;
         }
 
         /// <summary>
