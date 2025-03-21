@@ -68,8 +68,8 @@ namespace EjerciciosVictorAPI.Controllers
 
                 return Ok(new
                 {
-                    primeraFecha = $"El inicio del año es {Fecha.SacarPrimerDiaAnyo(fecha1)} y el final es {Fecha.SacarUltimoDiaAnyo(fecha1)}",
-                    segundaFecha = $"El inicio del año es {Fecha.SacarPrimerDiaAnyo(fecha2)} y el final es {Fecha.SacarUltimoDiaAnyo(fecha2)}"
+                    primeraFecha = $"{Environment.NewLine}El inicio del año es {Fecha.SacarPrimerDiaAnyo(fecha1)} y el final es {Fecha.SacarUltimoDiaAnyo(fecha1)}",
+                    segundaFecha = $"{Environment.NewLine}El inicio del año es {Fecha.SacarPrimerDiaAnyo(fecha2)} y el final es {Fecha.SacarUltimoDiaAnyo(fecha2)}"
                 });
             }
             catch (Exception ex)
@@ -128,8 +128,8 @@ namespace EjerciciosVictorAPI.Controllers
 
                 return Ok(new
                 {
-                    primeraFecha = $"Es la {Fecha.CalcularSemana(fecha1)}ª semana del mes",
-                    segundaFecha = $"Es la {Fecha.CalcularSemana(fecha2)}ª semana del mes"
+                    primeraFecha = $"Es la {Fecha.CalcularSemana(fecha1)}ª semana del año",
+                    segundaFecha = $"Es la {Fecha.CalcularSemana(fecha2)}ª semana del año"
                 });
             }
             catch (Exception ex)

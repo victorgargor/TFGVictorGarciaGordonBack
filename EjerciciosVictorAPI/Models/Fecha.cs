@@ -1,4 +1,6 @@
-﻿namespace EjerciciosVictorAPI.Models
+﻿using System.Globalization;
+
+namespace EjerciciosVictorAPI.Models
 {
     /// <summary>
     /// Clase que proporciona métodos para trabajar con fechas.
@@ -36,7 +38,7 @@
         public DateTime SacarUltimoDiaAnyo(DateTime fecha)
         {
             // Se devuelve el último día del año utilizando el año de la fecha dada
-            return new DateTime(fecha.Year, 12, 31);
+            return new DateTime(fecha.Year, 12, 31, 23, 59, 59);
         }
 
         /// <summary>
@@ -60,8 +62,13 @@
         /// <returns>El número de la semana en el que se encuentra la fecha.</returns>
         public int CalcularSemana(DateTime fecha)
         {
-            // Se calcula la semana dividiendo el día del mes entre 7 y sumando 1
-            return (fecha.Day - 1) / 7 + 1;
+            // Obtiene la configuración cultural actual
+            var cultura = CultureInfo.CurrentCulture;
+
+            // El CalendarWeekRule es para que la primera semana del año sea la que tiene al menos 4 días (ISO 8601)
+            // El DayOfWeek.Monday para indicar que la semana empieza el lunes
+            return cultura.Calendar.GetWeekOfYear(fecha, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
+
     }
 }
