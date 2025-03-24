@@ -4,7 +4,7 @@ using System.Globalization;
 namespace EjerciciosVictorAPI.Models
 {
     /// <summary>
-    /// Clase que representa un ítem separado a partir de una cadena de entrada con un formato específico.
+    /// Clase que representa un ítem a partir de una cadena de entrada con el formato "NombreItem$$##PrecioItem$$##CantidadItem".
     /// </summary>
     public class ItemSeparator
     {
@@ -24,44 +24,56 @@ namespace EjerciciosVictorAPI.Models
         public int Quantity { get; }
 
         /// <summary>
-        /// Constructor que recibe una cadena de entrada con el formato:
-        /// "NombreItem$$##PrecioItem$$##CantidadItem".
+        /// Constructor que procesa la cadena de entrada.
         /// </summary>
-        /// <param name="rawInput">Cadena de entrada con el formato esperado.</param>
-        /// <exception cref="FormatException">Se lanza si la cadena de entrada no tiene el formato correcto.</exception>
+        /// <param name="rawInput">Cadena en el formato "NombreItem$$##PrecioItem$$##CantidadItem".</param>
+        /// <exception cref="FormatException">Lanza una excepción si el formato es incorrecto.</exception>
         public ItemSeparator(string rawInput)
         {
-            // Divido la cadena usando el delimitador "$$##".
-            string[] partes = rawInput.Split("$$##");
+            // Divido la cadena usando el separador definido en Constantes.
+            string[] partes = rawInput.Split(Constantes.SEPARADOR);
 
-            // Compruebo que la cantidad de partes sea exactamente 3 (Nombre, Precio, Cantidad).
+            // Verifico que existan exactamente 3 partes.
             if (partes.Length != 3)
             {
-                throw new FormatException("Formato inválido, debe ser 'NombreItem$$##PrecioItem$$##CantidadItem'.");
+                throw new FormatException(Constantes.ERROR_SEPARADOR);
             }
 
-            // Asigno el nombre del ítem, eliminando espacios en blanco.
+            // Extraigo y valido el nombre.
             Name = partes[0].Trim();
-
-            // Si el no hay nombre.
             if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new FormatException("El nombre del ítem es obligatorio.");
+                throw new FormatException(Constantes.ERROR_NOMBRE_OBLIGATORIO);
             }
 
-            // Intenta convertir el precio a un número de tipo double.
-            if (!double.TryParse(partes[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out double price))
+            // Extraigo y valido el precio.
+            string precioStr = partes[1].Trim();
+            if (precioStr.Contains(','))
             {
-                throw new FormatException("El precio debe ser un número válido.");
+                throw new FormatException(Constantes.ERROR_SEPARADOR_DECIMAL);
             }
-
-            // Intenta convertir la cantidad a un número entero.
-            if (!int.TryParse(partes[2].Trim(), out int quantity))
+            // Si el precio es negativo o contiene letras, símbolos etc.
+            if (!double.TryParse(precioStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double price) || price < 0)
             {
-                throw new FormatException("La cantidad debe ser un número entero válido.");
+                throw new FormatException(Constantes.ERROR_PRECIO_NO_VALIDO);
             }
 
-            // Asigna los valores convertidos a las propiedades correspondientes.
+            // Extraigo y valido la cantidad.
+            string cantidadStr = partes[2].Trim();
+            if (cantidadStr.Length >= Constantes.MAX_DIGITOS_CANTIDAD)
+            {
+                throw new FormatException(Constantes.ERROR_CANTIDAD_DEMASIADO_LARGA);
+            }
+            if (!int.TryParse(cantidadStr, out int quantity))
+            {
+                throw new FormatException(Constantes.ERROR_CANTIDAD_NO_VALIDA);
+            }
+            // Si es negativa.
+            if (quantity < 0)
+            {
+                throw new FormatException(Constantes.ERROR_CANTIDAD_NEGATIVA);
+            }
+
             Price = price;
             Quantity = quantity;
         }

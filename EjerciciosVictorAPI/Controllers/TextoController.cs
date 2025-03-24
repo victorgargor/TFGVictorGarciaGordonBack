@@ -28,7 +28,7 @@ namespace EjerciciosVictorAPI.Controllers
         /// </summary>
         /// <param name="texto">Texto para contar los carácteres.</param>
         /// <returns>Resultado con el número de caracteres.</returns>
-        [HttpPost("contar")] // Ruta para contar caracteres
+        [HttpPost("contar")] 
         public ActionResult Contar([FromBody] string texto)
         {
             // Si no se proporciona texto, se utiliza el texto predeterminado
