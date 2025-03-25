@@ -91,7 +91,7 @@ namespace EjerciciosVictorAPI.Controllers
                 TodasLasFormas = todasLasFormas.Select(frm => new
                 {
                     // Tipo de la forma (Círculo, Cuadrado, Triángulo)
-                    Tipo = frm.GetType().Name, 
+                    Tipo = frm.GetType().Name,
                     frm.Color,
                     // Serializo el cenro
                     Centro = new { X = frm.Centro.x, Y = frm.Centro.y },
@@ -121,7 +121,8 @@ namespace EjerciciosVictorAPI.Controllers
                         tri.Altura,
                         tri.Color,
                         Centro = new { X = tri.Centro.x, Y = tri.Centro.y },
-                        Area = tri.CalcularArea()
+                        Area = tri.CalcularArea(),
+                        Propiedades = tri.ObtenerPropiedades()
                     })
                 }
             };

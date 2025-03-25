@@ -42,31 +42,33 @@
         /// <returns><c>true</c> si el número es un número de Kaprekar; en caso contrario, <c>false</c>.</returns>
         private bool VerificarKaprekar(int numero, out int operaciones)
         {
-            // Inicializo el contador de operaciones a 0.
             operaciones = 0;
-
-            // Calculo el cuadrado del número.
-            int cuadrado = numero * numero;
-
-            // Convierto el cuadrado a una cadena de texto.
+            long cuadrado = (long)numero * numero; // Usamos long para evitar desbordamiento
             string cuadradoStr = cuadrado.ToString();
 
             for (int i = 1; i < cuadradoStr.Length; i++)
             {
-                operaciones++; // Se incrementa el contador de operaciones por vuelta.
+                operaciones++; // Contamos la operación
 
-                // Divido la cadena en parte izquierda y derecha.
-                int parteIzquierda = int.Parse(cuadradoStr.Substring(0, i));
-                int parteDerecha = int.Parse(cuadradoStr.Substring(i));
+                // Partimos el número en izquierda y derecha
+                string parteIzquierdaStr = cuadradoStr.Substring(0, i);
+                string parteDerechaStr = cuadradoStr.Substring(i);
 
-                // Verifico que la suma de las partes sea igual al número original y que la parte derecha no sea 0.
-                if (parteIzquierda + parteDerecha == numero && parteDerecha != 0)
+                // Si la parte derecha está vacía o es "0", la ignoramos
+                if (string.IsNullOrEmpty(parteDerechaStr) || parteDerechaStr == "0")
+                    continue;
+
+                // Convertimos a long para evitar errores con números grandes
+                long parteIzquierda = long.Parse(parteIzquierdaStr);
+                long parteDerecha = long.Parse(parteDerechaStr);
+
+                // Si la suma de las partes da el número original, es Kaprekar
+                if (parteIzquierda + parteDerecha == numero)
                 {
-                    return true; // Si es un número Kaprekar válido.
+                    return true;
                 }
             }
 
-            // Si no es un número de Kaprekar.
             return false;
         }
 
