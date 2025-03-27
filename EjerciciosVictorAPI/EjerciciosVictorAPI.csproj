@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
-    <Compile Remove="Entidades\TipoCliente.cs" />
     <Compile Remove="Migrations\20250314120905_CRUD_Clientes_Recibos.cs" />
     <Compile Remove="Migrations\20250314120905_CRUD_Clientes_Recibos.Designer.cs" />
     <Compile Remove="Migrations\20250314124310_CRUD_Clientes_Recibos.cs" />
@@ -19,6 +18,12 @@
     <Compile Remove="Migrations\20250314125529_CRUD_Clientes_Recibos.Designer.cs" />
     <Compile Remove="Migrations\20250314125904_ClientesyRecibos.cs" />
     <Compile Remove="Migrations\20250314125904_ClientesyRecibos.Designer.cs" />
+    <Compile Remove="Migrations\20250317071228_ClientesRecibos.cs" />
+    <Compile Remove="Migrations\20250317071228_ClientesRecibos.Designer.cs" />
+    <Compile Remove="Migrations\20250327142820_ClientesYRecibos.cs" />
+    <Compile Remove="Migrations\20250327142820_ClientesYRecibos.Designer.cs" />
+    <Compile Remove="Migrations\20250327145626_add-migration ClientesYRecibosMigracion.cs" />
+    <Compile Remove="Migrations\20250327145626_add-migration ClientesYRecibosMigracion.Designer.cs" />
     <Compile Remove="Migrations\ApplicationDbContextModelSnapshot.cs" />
     <Compile Remove="Models\FormasGeneradas.cs" />
     <Compile Remove="Models\GeneradorFormas.cs" />

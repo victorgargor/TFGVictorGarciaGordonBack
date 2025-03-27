@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EjerciciosVictorAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class CRUD_Clientes_Recibos : Migration
+    public partial class ClientesYRecibos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace EjerciciosVictorAPI.Migrations
                 columns: table => new
                 {
                     DNI = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
-                    Nombre = table.Column<string>(type: "text", nullable: false),
+                    Nombre = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Tipo = table.Column<int>(type: "integer", nullable: false),
                     CuotaMaxima = table.Column<decimal>(type: "numeric", nullable: true),
                     FechaAlta = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

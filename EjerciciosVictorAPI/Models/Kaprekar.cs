@@ -26,6 +26,12 @@
         /// <param name="numero">El número a verificar.</param>
         public Kaprekar(int numero)
         {
+            // Verifica si el número es menor o igual a 0.
+            if (numero <= 0)
+            {
+                throw new ArgumentException("El número debe ser mayor que 0.");
+            }
+
             // Asigno el número.
             Numero = numero;
 

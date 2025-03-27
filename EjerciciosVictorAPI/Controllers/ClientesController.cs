@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using EjerciciosVictorAPI.Datos;
-using EjerciciosVictorAPI.Entidades; 
-using Microsoft.AspNetCore.Mvc; 
-using Microsoft.EntityFrameworkCore; 
+using EjerciciosVictorAPI.Entidades;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EjerciciosVictorAPI.Controllers
 {
@@ -67,15 +67,15 @@ namespace EjerciciosVictorAPI.Controllers
                 return BadRequest("Ya existe un cliente con ese DNI.");
             }
 
-            // Valido según el tipo de cliente
-            if (cliente.Tipo == "REGISTRADO")
+            // Valida según el tipo de cliente, ahora tipo es un Enum
+            if (cliente.Tipo == TipoCliente.REGISTRADO)
             {
                 if (cliente.CuotaMaxima is null || cliente.CuotaMaxima <= 0)
                 {
                     return BadRequest("Los clientes REGISTRADOS deben tener una cuota máxima válida.");
                 }
             }
-            else if (cliente.Tipo == "SOCIO")
+            else if (cliente.Tipo == TipoCliente.SOCIO)
             {
                 if (cliente.CuotaMaxima.HasValue)
                 {
@@ -97,10 +97,26 @@ namespace EjerciciosVictorAPI.Controllers
         [HttpPut("{dni}")]
         public async Task<ActionResult> EditarCliente(string dni, Cliente cliente)
         {
-            // Verifico que el DNI no ha sido modificado
+            // Verifica que el DNI no ha sido modificado
             if (dni != cliente.DNI)
             {
                 return BadRequest("El DNI no puede ser modificado");
+            }
+
+            // Valida que el tipo de cliente es correcto (igual que en la creación)
+            if (cliente.Tipo == TipoCliente.REGISTRADO)
+            {
+                if (cliente.CuotaMaxima is null || cliente.CuotaMaxima <= 0)
+                {
+                    return BadRequest("Los clientes REGISTRADOS deben tener una cuota máxima válida.");
+                }
+            }
+            else if (cliente.Tipo == TipoCliente.SOCIO)
+            {
+                if (cliente.CuotaMaxima.HasValue)
+                {
+                    return BadRequest("Los SOCIOS no deben tener una cuota máxima.");
+                }
             }
 
             // Actualiza el cliente y guarda los cambios en la base de datos
@@ -126,3 +142,4 @@ namespace EjerciciosVictorAPI.Controllers
         }
     }
 }
+

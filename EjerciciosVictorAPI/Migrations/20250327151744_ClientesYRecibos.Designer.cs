@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EjerciciosVictorAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250314124310_CRUD_Clientes_Recibos")]
-    partial class CRUD_Clientes_Recibos
+    [Migration("20250327151744_ClientesYRecibos")]
+    partial class ClientesYRecibos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,8 @@ namespace EjerciciosVictorAPI.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("Tipo")
                         .HasColumnType("integer");

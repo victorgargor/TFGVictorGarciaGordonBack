@@ -51,7 +51,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
 
             // Validar que el importe no supere la cuota máxima si el cliente es REGISTRADO
-            if (cliente.Tipo == "REGISTRADO" && cliente.CuotaMaxima.HasValue && recibo.Importe > cliente.CuotaMaxima.Value)
+            if (cliente.Tipo == TipoCliente.REGISTRADO && cliente.CuotaMaxima.HasValue && recibo.Importe > cliente.CuotaMaxima.Value)
             {
                 return BadRequest("El importe del recibo excede la cuota máxima permitida para este cliente.");
             }
@@ -132,7 +132,7 @@ namespace EjerciciosVictorAPI.Controllers
             }
 
             // Valido que el nuevo importe no supere la cuota máxima permitida para clientes REGISTRADOS
-            if (cliente.Tipo == "REGISTRADO" && cliente.CuotaMaxima.HasValue && reciboActualizado.Importe > cliente.CuotaMaxima.Value)
+            if (cliente.Tipo == TipoCliente.REGISTRADO && cliente.CuotaMaxima.HasValue && reciboActualizado.Importe > cliente.CuotaMaxima.Value)
             {
                 return BadRequest("El importe del recibo excede la cuota máxima permitida para este cliente.");
             }
@@ -176,3 +176,4 @@ namespace EjerciciosVictorAPI.Controllers
         }
     }
 }
+

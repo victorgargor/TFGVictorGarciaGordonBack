@@ -19,7 +19,7 @@ namespace EjerciciosVictorAPI.Controllers
         public ActionResult<Kaprekar> GetKaprekar(string numero)
         {
             // Verifico si el parámetro ingresado es un número entero válido.
-            if (!int.TryParse(numero, out int numeroEntero) || numeroEntero < 0)
+            if (!int.TryParse(numero, out int numeroEntero))
             {
                 // Si hay error.
                 return BadRequest(new { Mensaje = "El parámetro proporcionado debe de ser un número entero positivo (máximo 9 dígitos)." });
