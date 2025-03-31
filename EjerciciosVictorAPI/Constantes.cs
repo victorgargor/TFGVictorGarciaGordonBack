@@ -26,6 +26,11 @@
         public const string ERROR_NUMEROS_INVALIDOS = "Los números no son válidos o no se pueden convertir a double.";
 
         /// <summary>
+        /// Mensaje de error para números inválidos en la conversión a decimal.
+        /// </summary>
+        public const string ERROR_NUMEROS_INVALIDOSDECIMAL = "Los números no son válidos o no se pueden convertir a decimal.";
+
+        /// <summary>
         /// Mensaje de error cuando se intenta dividir o realizar la operación módulo por 0.
         /// </summary>
         public const string ERROR_DIVISION_CERO = "No se puede dividir por 0.";

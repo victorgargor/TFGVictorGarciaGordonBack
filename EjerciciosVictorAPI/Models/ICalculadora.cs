@@ -1,7 +1,7 @@
 ﻿namespace EjerciciosVictorAPI.Models
 {
     /// <summary>
-    /// Interfaz que define operaciones matemáticas básicas.
+    /// Interfaz que define operaciones matemáticas básicas (con double)
     /// </summary>
     public interface ICalculadora
     {

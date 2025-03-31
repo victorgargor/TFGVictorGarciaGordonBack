@@ -1,9 +1,9 @@
 ﻿namespace EjerciciosVictorAPI.Models
 {
     /// <summary>
-    /// Clase que implementa operaciones matemáticas básicas utilizando tipo double.
+    /// Clase que implementa operaciones matemáticas básicas utilizando tipo decimal.
     /// </summary>
-    public class Calculadora : ICalculadora
+    public class CalculadoraDecimal : ICalculadoraDecimal
     {
         /// <summary>
         /// Calcula la suma de dos números y redondea el resultado a un número específico de decimales.
@@ -12,7 +12,7 @@
         /// <param name="num2">El segundo número.</param>
         /// <param name="numDec">El número de decimales al que se redondeará el resultado.</param>
         /// <returns>El resultado de la suma redondeada.</returns>
-        public double CalcularSuma(double num1, double num2, int numDec)
+        public decimal CalcularSuma(decimal num1, decimal num2, int numDec)
         {
             return Math.Round(num1 + num2, numDec);
         }
@@ -24,7 +24,7 @@
         /// <param name="num2">El segundo número.</param>
         /// <param name="numDec">El número de decimales al que se redondeará el resultado.</param>
         /// <returns>El resultado de la resta redondeada.</returns>
-        public double CalcularResta(double num1, double num2, int numDec)
+        public decimal CalcularResta(decimal num1, decimal num2, int numDec)
         {
             return Math.Round(num1 - num2, numDec);
         }
@@ -36,7 +36,7 @@
         /// <param name="num2">El segundo número.</param>
         /// <param name="numDec">El número de decimales al que se redondeará el resultado.</param>
         /// <returns>El resultado de la división redondeada.</returns>
-        public double CalcularDivision(double num1, double num2, int numDec)
+        public decimal CalcularDivision(decimal num1, decimal num2, int numDec)
         {
             return Math.Round(num1 / num2, numDec);
         }
@@ -48,12 +48,12 @@
         /// <param name="num2">El segundo número.</param>
         /// <param name="numDec">El número de decimales al que se redondeará el resultado.</param>
         /// <returns>El resultado de la multiplicación redondeada.</returns>
-        public double CalcularMultiplicacion(double num1, double num2, int numDec)
+        public decimal CalcularMultiplicacion(decimal num1, decimal num2, int numDec)
         {
             var resultado = Math.Round(num1 * num2, numDec);
 
             // Por si se multiplica un número negativo por 0 para que la salida no sea -0.
-            if(resultado == 0)
+            if (resultado == 0)
             {
                 return Math.Abs(resultado);
             }
@@ -68,7 +68,7 @@
         /// <param name="num2">El segundo número.</param>
         /// <param name="numDec">El número de decimales al que se redondeará el resultado.</param>
         /// <returns>El resultado del módulo redondeado.</returns>
-        public double CalcularModulo(double num1, double num2, int numDec)
+        public decimal CalcularModulo(decimal num1, decimal num2, int numDec)
         {
             var resultado = Math.Round(num1 % num2, numDec);
 
@@ -82,7 +82,7 @@
         /// <param name="num1">El primer número.</param>
         /// <param name="num2">El segundo número.</param>
         /// <returns>1 si num1 es mayor que num2, 0 si son iguales, -1 si num1 es menor que num2.</returns>
-        public int CompararNumeros(double num1, double num2)
+        public int CompararNumeros(decimal num1, decimal num2)
         {
             if (num1 > num2)
             {
@@ -96,4 +96,3 @@
         }
     }
 }
-
