@@ -51,6 +51,14 @@
         private bool VerificarKaprekar(int numero, out int operaciones)
         {
             operaciones = 0;
+
+            // Si el número es un 1 seguido de ceros (y tiene más de un dígito) no es Kaprekar.
+            string numeroCadena = numero.ToString();
+            if (numeroCadena.Length > 1 && numeroCadena[0] == '1' && numeroCadena.Substring(1).All(digito => digito == '0'))
+            {
+                return false;
+            }
+
             long cuadrado = (long)numero * numero;
             string cuadradoStr = cuadrado.ToString();
 

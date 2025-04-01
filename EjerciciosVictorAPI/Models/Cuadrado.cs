@@ -50,7 +50,7 @@
         /// <returns></returns>
         public override string ObtenerPropiedades()
         {
-            return $"Lado: {Lado}, Color: {Color}, Coordenadas: ({Centro.x}, {Centro.y})";
+            return $"Lado: {Lado} unidades, Color: {Color}, Coordenadas: ({Centro.x}, {Centro.y})";
         }
     }
 }

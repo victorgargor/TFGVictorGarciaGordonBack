@@ -50,7 +50,7 @@
         /// <returns></returns>
         public override string ObtenerPropiedades()
         {
-            return $"Radio: {Radio}, Color: {Color}, Coordenadas: ({Centro.x}, {Centro.y})";
+            return $"Radio: {Radio} unidades, Color: {Color}, Coordenadas: ({Centro.x}, {Centro.y})";
         }
     }
 }

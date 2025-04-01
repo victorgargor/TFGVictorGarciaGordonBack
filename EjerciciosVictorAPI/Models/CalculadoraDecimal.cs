@@ -14,7 +14,14 @@
         /// <returns>El resultado de la suma redondeada.</returns>
         public decimal CalcularSuma(decimal num1, decimal num2, int numDec)
         {
-            return Math.Round(num1 + num2, numDec);
+            try
+            {
+                return Math.Round(num1 + num2, numDec);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("El resultado es demasiado grande o demasiado pequeño");
+            }
         }
 
         /// <summary>
@@ -26,7 +33,14 @@
         /// <returns>El resultado de la resta redondeada.</returns>
         public decimal CalcularResta(decimal num1, decimal num2, int numDec)
         {
-            return Math.Round(num1 - num2, numDec);
+            try
+            {
+                return Math.Round(num1 - num2, numDec);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("El resultado es demasiado grande o demasiado pequeño");
+            }           
         }
 
         /// <summary>
@@ -38,7 +52,14 @@
         /// <returns>El resultado de la división redondeada.</returns>
         public decimal CalcularDivision(decimal num1, decimal num2, int numDec)
         {
-            return Math.Round(num1 / num2, numDec);
+            try
+            {
+                return Math.Round(num1 / num2, numDec);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("El resultado es demasiado grande o demasiado pequeño");
+            }
         }
 
         /// <summary>
@@ -50,15 +71,17 @@
         /// <returns>El resultado de la multiplicación redondeada.</returns>
         public decimal CalcularMultiplicacion(decimal num1, decimal num2, int numDec)
         {
-            var resultado = Math.Round(num1 * num2, numDec);
-
-            // Por si se multiplica un número negativo por 0 para que la salida no sea -0.
-            if (resultado == 0)
+            try
             {
-                return Math.Abs(resultado);
-            }
+                var resultado = Math.Round(num1 * num2, numDec);
 
-            return resultado;
+                // Para que no salga -0 al multiplicar un número negativo * 0
+                return resultado == 0 ? Math.Abs(resultado) : resultado;
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("El resultado es demasiado grande o demasiado pequeño");
+            }
         }
 
         /// <summary>
@@ -70,10 +93,17 @@
         /// <returns>El resultado del módulo redondeado.</returns>
         public decimal CalcularModulo(decimal num1, decimal num2, int numDec)
         {
-            var resultado = Math.Round(num1 % num2, numDec);
+            try
+            {
+                var resultado = Math.Round(num1 % num2, numDec);
 
-            // Devuelvo el valor absoluto ya que el módulo de un número negativo tiene que ser positivo o cero.
-            return Math.Abs(resultado);
+                // Devuelvo el valor absoluto ya que el módulo de un número negativo tiene que ser positivo o cero.
+                return Math.Abs(resultado);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("El resultado es demasiado grande o demasiado pequeño");
+            }           
         }
 
         /// <summary>

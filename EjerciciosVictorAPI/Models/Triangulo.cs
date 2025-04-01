@@ -101,7 +101,7 @@
         /// <returns>Una cadena con las propiedades del triángulo.</returns>
         public override string ObtenerPropiedades()
         {
-            return $"Base: {Base}, Altura: {Altura}, Desplazamiento: {Desplazamiento:F2}, " +
+            return $"Base: {Base} unidades, Altura: {Altura} unidades, Desplazamiento: {Desplazamiento:F2} unidades, " +
                    $"Ángulos: A = {AnguloA:F2}°, B = {AnguloB:F2}°, C = {AnguloC:F2}°, " +
                    $"Color: {Color}, Coordenadas: ({Centro.x}, {Centro.y})";
         }
