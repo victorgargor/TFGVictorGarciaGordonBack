@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,41 +16,48 @@ namespace EjerciciosVictorAPI.Migrations
                 name: "Clientes",
                 columns: table => new
                 {
-                    DNI = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DNI = table.Column<string>(type: "text", nullable: false),
                     Nombre = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Apellido1 = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Apellido2 = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Tipo = table.Column<int>(type: "integer", nullable: false),
                     CuotaMaxima = table.Column<decimal>(type: "numeric", nullable: true),
-                    FechaAlta = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    FechaAlta = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FechaBaja = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clientes", x => x.DNI);
+                    table.PrimaryKey("PK_Clientes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Recibos",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     NumeroRecibo = table.Column<string>(type: "text", nullable: false),
                     Importe = table.Column<decimal>(type: "numeric", nullable: false),
                     FechaEmision = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ClienteDNI = table.Column<string>(type: "character varying(9)", nullable: false)
+                    ClienteId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recibos", x => x.NumeroRecibo);
+                    table.PrimaryKey("PK_Recibos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Recibos_Clientes_ClienteDNI",
-                        column: x => x.ClienteDNI,
+                        name: "FK_Recibos_Clientes_ClienteId",
+                        column: x => x.ClienteId,
                         principalTable: "Clientes",
-                        principalColumn: "DNI",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recibos_ClienteDNI",
+                name: "IX_Recibos_ClienteId",
                 table: "Recibos",
-                column: "ClienteDNI");
+                column: "ClienteId");
         }
 
         /// <inheritdoc />

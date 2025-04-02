@@ -24,14 +24,31 @@ namespace EjerciciosVictorAPI.Migrations
 
             modelBuilder.Entity("EjerciciosVictorAPI.Entidades.Cliente", b =>
                 {
-                    b.Property<string>("DNI")
-                        .HasMaxLength(9)
-                        .HasColumnType("character varying(9)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Apellido1")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Apellido2")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<decimal?>("CuotaMaxima")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("DNI")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("FechaAlta")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaBaja")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Nombre")
@@ -42,19 +59,21 @@ namespace EjerciciosVictorAPI.Migrations
                     b.Property<int>("Tipo")
                         .HasColumnType("integer");
 
-                    b.HasKey("DNI");
+                    b.HasKey("Id");
 
                     b.ToTable("Clientes");
                 });
 
             modelBuilder.Entity("EjerciciosVictorAPI.Entidades.Recibo", b =>
                 {
-                    b.Property<string>("NumeroRecibo")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.Property<string>("ClienteDNI")
-                        .IsRequired()
-                        .HasColumnType("character varying(9)");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("FechaEmision")
                         .HasColumnType("timestamp with time zone");
@@ -62,9 +81,13 @@ namespace EjerciciosVictorAPI.Migrations
                     b.Property<decimal>("Importe")
                         .HasColumnType("numeric");
 
-                    b.HasKey("NumeroRecibo");
+                    b.Property<string>("NumeroRecibo")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.HasIndex("ClienteDNI");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
 
                     b.ToTable("Recibos");
                 });
@@ -73,7 +96,7 @@ namespace EjerciciosVictorAPI.Migrations
                 {
                     b.HasOne("EjerciciosVictorAPI.Entidades.Cliente", "Cliente")
                         .WithMany("Recibos")
-                        .HasForeignKey("ClienteDNI")
+                        .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

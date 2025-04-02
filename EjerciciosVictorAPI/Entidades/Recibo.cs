@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace EjerciciosVictorAPI.Entidades
@@ -9,9 +10,14 @@ namespace EjerciciosVictorAPI.Entidades
     public class Recibo
     {
         /// <summary>
-        /// Número de recibo único que actúa como PK (primary key).
+        /// Identificador único del recibo (PK).
         /// </summary>
         [Key]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Número de recibo único que actúa como PK (primary key).
+        /// </summary>
         [Required(ErrorMessage = "El número de recibo es requerido")]
         public required string NumeroRecibo { get; set; }
 
@@ -30,10 +36,11 @@ namespace EjerciciosVictorAPI.Entidades
         public DateTime FechaEmision { get; set; }
 
         /// <summary>
-        /// DNI del cliente al que pertenece el recibo.
+        /// Id del cliente al que pertenece el recibo.
         /// </summary>
-        [Required(ErrorMessage = "Se requiere el DNI del cliente correspondiente")]
-        public required string ClienteDNI { get; set; }
+        [Required(ErrorMessage = "Se requiere el Id del cliente correspondiente")]
+        [ForeignKey("Cliente")]
+        public int ClienteId { get; set; }
 
         /// <summary>
         /// Propiedad de navegación con el cliente asociado al recibo.
