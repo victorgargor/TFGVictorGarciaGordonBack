@@ -118,9 +118,8 @@ namespace EjerciciosVictorAPI.Controllers
             return Ok();
         }
 
-        // PUT: api/clientes/baja/{dni}
         [HttpPut("baja/{dni}")]
-        public async Task<ActionResult> DarBajaCliente(string dni)
+        public async Task<ActionResult> DarBajaCliente(string dni, [FromQuery] DateTime fechaBaja)
         {
             var cliente = await context.Clientes.FirstOrDefaultAsync(c => c.DNI == dni);
             if (cliente == null)
@@ -133,10 +132,11 @@ namespace EjerciciosVictorAPI.Controllers
                 return BadRequest("El cliente ya se encuentra dado de baja.");
             }
 
-            // Convertir la fecha actual a UTC
-            cliente.FechaBaja = DateTime.Now.ToUniversalTime();
+            // Asignamos la fecha y hora proporcionadas por el frontend
+            cliente.FechaBaja = fechaBaja;
             context.Update(cliente);
             await context.SaveChangesAsync();
+
             return Ok("Cliente dado de baja.");
         }
 

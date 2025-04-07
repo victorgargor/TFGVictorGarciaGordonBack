@@ -112,6 +112,23 @@ namespace EjerciciosVictorAPI.Controllers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Recibo>> ObtenerRecibo(int id)
+        {
+            var recibo = await context.Recibos.FirstOrDefaultAsync(r => r.Id == id);
+            if (recibo == null)
+            {
+                return NotFound("Recibo no encontrado.");
+            }
+            return Ok(recibo);
+        }
+
+
+        /// <summary>
         /// Edita los datos de un recibo existente.
         /// Se valida el formato de la fecha, que el cliente asociado esté activo y que el importe cumpla las reglas de cuota.
         /// </summary>
