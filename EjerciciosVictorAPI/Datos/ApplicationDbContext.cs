@@ -1,10 +1,11 @@
 ﻿using EjerciciosVictorAPI.Controllers;
 using EjerciciosVictorAPI.Entidades;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EjerciciosVictorAPI.Datos
 {
-    public class ApplicationDbContext : DbContext // Clase a partir de la cual configuro las tablas de mi BD
+    public class ApplicationDbContext : IdentityDbContext // Clase a partir de la cual configuro las tablas de mi BD
     {
         // Para realizar configuraciones de EntityFrameworkCore fuera de esta clase
         public ApplicationDbContext(DbContextOptions options) : base(options)
