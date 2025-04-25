@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using EjerciciosVictorAPI.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +29,7 @@ namespace EjerciciosVictorAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<UserTokenDTO>> CreateUser([FromBody] UserInfoDTO model)
         {
-            var usuario = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var usuario = new IdentityUser { UserName = model.Nombre, Email = model.Email };
             var resultado = await userManager.CreateAsync(usuario, model.Password);
 
             if (resultado.Succeeded)
@@ -41,20 +42,20 @@ namespace EjerciciosVictorAPI.Controllers
             }
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
 
         public async Task<ActionResult<UserTokenDTO>> Login([FromBody] UserInfoDTO model)
         {
-            var resultado = await signInManager.PasswordSignInAsync(model.Email,
-                model.Password, isPersistent: false, lockoutOnFailure: false);
+            var usuario = await userManager.FindByEmailAsync(model.Email);
+            var resultado = await signInManager.CheckPasswordSignInAsync(usuario, model.Password, lockoutOnFailure: false);
 
-            if (resultado.Succeeded)
+            if (!resultado.Succeeded || usuario.UserName != model.Nombre)
             {
-                return BuildToken(model);
+                return BadRequest("Intento de login fallido");             
             }
             else
             {
-                return BadRequest("Intento de login fallido");
+                return BuildToken(model);
             }
         }
 
@@ -62,7 +63,7 @@ namespace EjerciciosVictorAPI.Controllers
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, userInfo.Nombre),
+                 new Claim(ClaimTypes.Name, userInfo.Nombre),
                 new Claim(ClaimTypes.Email, userInfo.Email)
             };
 
