@@ -29,12 +29,12 @@ namespace EjerciciosVictorAPI.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<UserTokenDTO>> CreateUser([FromBody] UserInfoDTO model)
         {
-            var usuario = new IdentityUser { UserName = model.Nombre, Email = model.Email };
+            var usuario = new IdentityUser { UserName = model.Email, Email = model.Email };
             var resultado = await userManager.CreateAsync(usuario, model.Password);
 
             if (resultado.Succeeded)
             {
-                return BuildToken(model);
+                return await BuildToken(model);
             }
             else
             {
@@ -49,23 +49,31 @@ namespace EjerciciosVictorAPI.Controllers
             var usuario = await userManager.FindByEmailAsync(model.Email);
             var resultado = await signInManager.CheckPasswordSignInAsync(usuario, model.Password, lockoutOnFailure: false);
 
-            if (!resultado.Succeeded || usuario.UserName != model.Nombre)
+            if (!resultado.Succeeded)
             {
                 return BadRequest("Intento de login fallido");             
             }
             else
             {
-                return BuildToken(model);
+                return await BuildToken(model);
             }
         }
 
-        private UserTokenDTO BuildToken(UserInfoDTO userInfo)
+        private async Task<UserTokenDTO> BuildToken(UserInfoDTO userInfo)
         {
             var claims = new List<Claim>()
             {
-                 new Claim(ClaimTypes.Name, userInfo.Nombre),
+                new Claim(ClaimTypes.Name, userInfo.Email),
                 new Claim(ClaimTypes.Email, userInfo.Email)
             };
+
+            var usuario = await userManager.FindByEmailAsync(userInfo.Email);
+            var roles = await userManager.GetRolesAsync(usuario!);
+
+            foreach (var rol in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, rol));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwtkey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
