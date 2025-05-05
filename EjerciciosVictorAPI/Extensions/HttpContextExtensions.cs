@@ -12,6 +12,7 @@ namespace EjerciciosVictorAPI.Extensions
 
             // Agregar la cabecera 'totalPaginas' a la respuesta
             context.Response.Headers.Add("totalPaginas", totalPaginas.ToString());
+            context.Response.Headers.Add("Access-Control-Expose-Headers", "totalPaginas");
         }
     }
 }

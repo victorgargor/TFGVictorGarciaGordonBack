@@ -44,6 +44,32 @@ namespace EjerciciosVictorAPI.Controllers
             return await context.Roles.Select(x => new RolDTO { Nombre = x.Name! }).ToListAsync();
         }
 
+        [HttpGet("obtenerRoles/{usuarioId}")]
+        public async Task<ActionResult<List<string>>> ObtenerRolesPorUsuario(string usuarioId)
+        {
+            // 1) Verificamos que el usuario exista
+            var usuario = await context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+
+            if (usuario is null)
+            {
+                return NotFound("Usuario no encontrado");
+            }
+
+            // 2) Hacemos JOIN manual entre UserRoles y Roles
+            var rolesAsignados = await (
+                from ur in context.UserRoles
+                join r in context.Roles on ur.RoleId equals r.Id
+                where ur.UserId == usuarioId
+                select r.Name!
+            ).ToListAsync();
+
+            return Ok(rolesAsignados);
+        }
+
+
+
         [HttpPost("asignarRol")]
         public async Task<ActionResult> AsignarRolUsuario(EditarRolDTO editarRolDTO)
         {

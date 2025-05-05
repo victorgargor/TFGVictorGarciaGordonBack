@@ -34,6 +34,7 @@ namespace EjerciciosVictorAPI.Controllers
 
             if (resultado.Succeeded)
             {
+                var rolResult = await userManager.AddToRoleAsync(usuario, "usuario");
                 return await BuildToken(model);
             }
             else
@@ -43,21 +44,30 @@ namespace EjerciciosVictorAPI.Controllers
         }
 
         [HttpPost("login")]
-
         public async Task<ActionResult<UserTokenDTO>> Login([FromBody] UserInfoDTO model)
         {
+            // 1. Buscamos el usuario por email
             var usuario = await userManager.FindByEmailAsync(model.Email);
-            var resultado = await signInManager.CheckPasswordSignInAsync(usuario, model.Password, lockoutOnFailure: false);
+
+            if (usuario == null)
+            {
+                return Unauthorized("El correo electrónico introducido es incorrecto o no existe");
+  
+            }
+
+            var resultado = await signInManager
+                .CheckPasswordSignInAsync(usuario, model.Password, lockoutOnFailure: false);
 
             if (!resultado.Succeeded)
             {
-                return BadRequest("Intento de login fallido");             
+                return Unauthorized("La contraseña introducida es incorrecta");
+    
             }
-            else
-            {
-                return await BuildToken(model);
-            }
+
+            // 4. Si todo va bien, generamos el token
+            return await BuildToken(model);
         }
+
 
         private async Task<UserTokenDTO> BuildToken(UserInfoDTO userInfo)
         {
