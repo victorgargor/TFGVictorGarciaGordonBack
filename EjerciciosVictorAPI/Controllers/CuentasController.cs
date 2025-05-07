@@ -1,10 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using EjerciciosVictorAPI.Datos;
 using EjerciciosVictorAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EjerciciosVictorAPI.Controllers
@@ -16,14 +18,17 @@ namespace EjerciciosVictorAPI.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly IConfiguration configuration;
+        private readonly ApplicationDbContext context;
 
         public CuentasController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
+            this.context = context;
         }
 
         [HttpPost("crear")]
@@ -68,42 +73,61 @@ namespace EjerciciosVictorAPI.Controllers
             return await BuildToken(model);
         }
 
-
         private async Task<UserTokenDTO> BuildToken(UserInfoDTO userInfo)
         {
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, userInfo.Email),
-                new Claim(ClaimTypes.Email, userInfo.Email)
-            };
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, userInfo.Email),
+        new Claim(ClaimTypes.Email, userInfo.Email)
+    };
 
             var usuario = await userManager.FindByEmailAsync(userInfo.Email);
             var roles = await userManager.GetRolesAsync(usuario!);
 
+            // 1) Añadimos los roles como claims
             foreach (var rol in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, rol));
             }
 
+            // 2) Sacamos los role-ids del usuario
+            var userRoleIds = await context.UserRoles
+                .Where(ur => ur.UserId == usuario.Id)
+                .Select(ur => ur.RoleId)
+                .ToListAsync();
+
+            // 3) Por cada roleId, obtenemos los permisos
+            var permisos = await (
+                from rp in context.RolPermisos
+                join p in context.Permisos on rp.PermisoId equals p.Id
+                where userRoleIds.Contains(rp.RolId)
+                select p.Nombre
+            ).ToListAsync();
+
+            // 4) Añadimos un claim "permiso" por cada permiso
+            foreach (var permisoNombre in permisos.Distinct())
+            {
+                claims.Add(new Claim("permiso", permisoNombre));
+            }
+
+            // 5) Creamos el token
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwtkey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var expiration = DateTime.UtcNow.AddYears(1);
 
-            var token = new JwtSecurityToken(
+            var jwt = new JwtSecurityToken(
                 issuer: null,
                 audience: null,
                 claims: claims,
                 expires: expiration,
                 signingCredentials: creds
-                );
+            );
 
             return new UserTokenDTO
             {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Token = new JwtSecurityTokenHandler().WriteToken(jwt),
                 Expiration = expiration
             };
         }
-
     }
 }

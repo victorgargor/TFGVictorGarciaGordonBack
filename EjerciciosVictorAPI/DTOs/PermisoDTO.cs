@@ -1,8 +1,8 @@
 ﻿namespace EjerciciosVictorAPI.DTOs
 {
-    public class RolDTO
+    public class PermisoDTO
     {
-        public string Id { get; set; } = null!;
+        public string Id { get; set; } = Guid.NewGuid().ToString(); 
         public string Nombre { get; set; } = null!;
     }
 }

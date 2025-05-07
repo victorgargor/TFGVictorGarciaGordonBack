@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EjerciciosVictorAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250424093853_ClientesRecibos")]
-    partial class ClientesRecibos
+    [Migration("20250507071544_AgregarPermisos")]
+    partial class AgregarPermisos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,21 @@ namespace EjerciciosVictorAPI.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("EjerciciosVictorAPI.Entidades.Permiso", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permisos");
+                });
+
             modelBuilder.Entity("EjerciciosVictorAPI.Entidades.Recibo", b =>
                 {
                     b.Property<int>("Id")
@@ -93,6 +108,21 @@ namespace EjerciciosVictorAPI.Migrations
                     b.HasIndex("ClienteId");
 
                     b.ToTable("Recibos");
+                });
+
+            modelBuilder.Entity("EjerciciosVictorAPI.Entidades.RolPermiso", b =>
+                {
+                    b.Property<string>("RolId")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PermisoId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("RolId", "PermisoId");
+
+                    b.HasIndex("PermisoId");
+
+                    b.ToTable("RolPermisos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -302,6 +332,25 @@ namespace EjerciciosVictorAPI.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("EjerciciosVictorAPI.Entidades.RolPermiso", b =>
+                {
+                    b.HasOne("EjerciciosVictorAPI.Entidades.Permiso", "Permiso")
+                        .WithMany("RolPermisos")
+                        .HasForeignKey("PermisoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Rol")
+                        .WithMany()
+                        .HasForeignKey("RolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permiso");
+
+                    b.Navigation("Rol");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -356,6 +405,11 @@ namespace EjerciciosVictorAPI.Migrations
             modelBuilder.Entity("EjerciciosVictorAPI.Entidades.Cliente", b =>
                 {
                     b.Navigation("Recibos");
+                });
+
+            modelBuilder.Entity("EjerciciosVictorAPI.Entidades.Permiso", b =>
+                {
+                    b.Navigation("RolPermisos");
                 });
 #pragma warning restore 612, 618
         }

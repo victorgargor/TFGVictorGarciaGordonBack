@@ -41,7 +41,14 @@ namespace EjerciciosVictorAPI.Controllers
         [HttpGet("roles")]
         public async Task<ActionResult<List<RolDTO>>> Get()
         {
-            return await context.Roles.Select(x => new RolDTO { Nombre = x.Name! }).ToListAsync();
+            // Modificado para incluir el Id junto con el Nombre
+            return await context.Roles
+                .Select(x => new RolDTO
+                {
+                    Id = x.Id,  // Incluye el Id del rol
+                    Nombre = x.Name!
+                })
+                .ToListAsync();
         }
 
         [HttpGet("obtenerRoles/{usuarioId}")]
@@ -96,6 +103,21 @@ namespace EjerciciosVictorAPI.Controllers
 
             await userManager.RemoveFromRoleAsync(usuario, editarRolDTO.Rol);
             return NoContent();
+        }
+
+        [HttpGet("obtenerNombre/{usuarioId}")]
+        public async Task<ActionResult<string>> ObtenerNombreUsuario(string usuarioId)
+        {
+            var usuario = await context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+
+            if (usuario is null)
+            {
+                return NotFound("Usuario no encontrado");
+            }
+
+            return Ok(usuario.UserName); 
         }
     }
 }

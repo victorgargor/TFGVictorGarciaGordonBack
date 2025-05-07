@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EjerciciosVictorAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class ClientesRecibos : Migration
+    public partial class AgregarPermisos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,6 +69,18 @@ namespace EjerciciosVictorAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clientes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permisos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Nombre = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permisos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,6 +211,30 @@ namespace EjerciciosVictorAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RolPermisos",
+                columns: table => new
+                {
+                    RolId = table.Column<string>(type: "text", nullable: false),
+                    PermisoId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolPermisos", x => new { x.RolId, x.PermisoId });
+                    table.ForeignKey(
+                        name: "FK_RolPermisos_AspNetRoles_RolId",
+                        column: x => x.RolId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolPermisos_Permisos_PermisoId",
+                        column: x => x.PermisoId,
+                        principalTable: "Permisos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -240,6 +276,11 @@ namespace EjerciciosVictorAPI.Migrations
                 name: "IX_Recibos_ClienteId",
                 table: "Recibos",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolPermisos_PermisoId",
+                table: "RolPermisos",
+                column: "PermisoId");
         }
 
         /// <inheritdoc />
@@ -264,13 +305,19 @@ namespace EjerciciosVictorAPI.Migrations
                 name: "Recibos");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "RolPermisos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Clientes");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Permisos");
         }
     }
 }
