@@ -33,24 +33,39 @@ opciones.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
     opciones.UseNpgsql("name=DefaultConnection"));
 
+// Configura Identity para la gestión de usuarios y roles con Entity Framework
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    // Guarda usuarios y roles en la base de datos
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    // Habilita tokens para login, recuperación, etc.
     .AddDefaultTokenProviders();
 
+// Configura autenticación con JWT Bearer
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
+            // No validoel issuer (emisor del token)
             ValidateIssuer = false,
+
+            // No valido el audience (a quién va dirigido el token)
             ValidateAudience = false,
+
+            // Valido que el token no haya expirado
             ValidateLifetime = true,
+
+            // Valido que el token esté firmado con la clave correcta
             ValidateIssuerSigningKey = true,
+
+            // Clave usada para firmar el token, sacada de appsettings.json (clave: jwtkey)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["jwtkey"])),
-            ClockSkew = TimeSpan.Zero
-        }
 
-    );
+            // No permitimos margen de diferencia entre reloj del servidor y cliente
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 var app = builder.Build();
 

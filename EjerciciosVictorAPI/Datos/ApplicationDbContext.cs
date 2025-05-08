@@ -18,9 +18,13 @@ namespace EjerciciosVictorAPI.Datos
         // Para indicar que quiero que se cree una tabla en mi BD a partir de las propiedades de la clase Recibo
         public DbSet<Recibo> Recibos { get; set; }
 
+        // Para indicar que quiero que se cree una tabla en mi BD a partir de las propiedades de la clase Permiso
         public DbSet<Permiso> Permisos { get; set; }
+
+        // Para indicar que quiero que se cree una tabla en mi BD a partir de las propiedades de la clase RolPermiso
         public DbSet<RolPermiso> RolPermisos { get; set; }
 
+        // Configuro las claves primarias y foráneas
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
